@@ -1,0 +1,54 @@
+.logo{
+   width: 10%;
+}
+.menu {
+   width: 75%;
+   text-align: right;
+   line-height: 60px;
+}
+.cart {
+   color: orange;
+   width: 13%;
+   text-align: center;
+   padding-top: 15px;
+   font-size: 18px;
+   font-weight: 600;
+}
+.cart:hover{
+   color: orange;
+   text-decoration: none;
+}
+.header {
+   background-color: #bac8d8;
+   height: 80px;
+}
+.d-flex.container.p-20 {
+   padding-top: 18px;
+}
+.logo {
+   color: orange;
+   width: 20%;
+   padding: 10px;
+   margin-top: -15px;
+}
+.logo img{
+   width: 100%;
+}
+nav .link {
+   text-decoration: none;
+   padding: 10px 20px;
+   font-size: 20px;
+   color: white;
+   transition: all 0.3s;
+}
+nav .link:hover{
+   text-decoration: none;
+   background-color: #5569db;
+   color: white;
+   border-radius: 5px;
+   text-decoration: none;
+}
+.Custom {
+   max-width: 50%;
+   height: auto;
+}
