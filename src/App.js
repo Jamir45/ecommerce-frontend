@@ -20,6 +20,7 @@ import { AuthContextProvider, useAuth } from './Component/UseAuth/useAuth';
 import PrivateRoute from './Component/PrivateRoute/PrivateRoute';
 import Shipping from './Component/Shipping/Shipping';
 import CompleteRegistrtion from './Component/CompleteRegistration/CompleteRegistrtion';
+import Profile from './Component/Profile/Profile';
 
 export const DataContext = createContext()
 
@@ -59,6 +60,9 @@ function App() {
           </Route>
           <Route path='/sign-up'>
             <SignUp></SignUp>
+          </Route>
+          <Route path='/profile'>
+            <Profile></Profile>
           </Route>
           <Route path='/sign-in'>
             <Login></Login>

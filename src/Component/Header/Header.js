@@ -1,4 +1,4 @@
-import { AppBar, Container, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, makeStyles, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Avatar, Container, Divider, Drawer, Fab, IconButton, List, ListItem, ListItemIcon, makeStyles, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
 import StyledBadge from '@material-ui/core/Badge';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import MailIcon from '@material-ui/icons/Mail';
@@ -18,11 +18,7 @@ const Header = () => {
 
    const auth = useAuth()
    const user = auth.user
-
-   // Store
-   const store = useContext(DataContext)
    const cart = auth.cart
-   const setCart = store.setCart
 
    // Make Material UI Custom Style
    const useStyles = makeStyles((theme) => ({
@@ -66,14 +62,26 @@ const Header = () => {
         onKeyDown={toggleDrawer(anchor, false)}
       >
          <List>
-            <IconButton
-               aria-label="account of current user"
-               aria-controls="menu-appbar"
-               aria-haspopup="true"
-               color="inherit"
-            >
-               <AccountCircle className={classes.profileIcon+" ml-5"}/>
-            </IconButton>
+            {
+               user ? 
+               <div className="my-3">
+                  { user.picture ? <Avatar alt="Remy Sharp" src={user.picture} className={classes.large} />
+                     : 
+                  <Fab 
+                     size="medium" 
+                     variant="extended"
+                  >
+                     {user.name}
+                  </Fab>}
+               </div>
+                  :
+               <Fab 
+                  size="medium" 
+                  variant="extended"
+               >
+                  Login
+               </Fab>
+            }
             <ListItem button>
               <ListItemIcon><MailIcon/> <Link className="ml-3" >Profile</Link> </ListItemIcon>
             </ListItem>
@@ -132,7 +140,7 @@ const Header = () => {
                      <Link className="link" to="/manage-cart">Inventory</Link>
                      <Link to="/review">
                         <IconButton className="mx-3" aria-label="cart">
-                           <StyledBadge badgeContent={cart.length} color="secondary">
+                           <StyledBadge badgeContent={cart && cart.length} color="secondary">
                            <AddShoppingCartIcon className={classes.cart} />
                            </StyledBadge>
                         </IconButton>
@@ -143,18 +151,24 @@ const Header = () => {
                <div className='text-center'>
                   {
                      user ? 
-                     // <img onClick={handleMenu} className="img-fluid rounded-circle Custom" src={user.photo} alt=""/>
-                     <p onClick={handleMenu}> {user.name} </p>
+                     <div onClick={handleMenu}>
+                        { user.picture ? <Avatar alt="Remy Sharp" src={user.picture} className={classes.large} />
+                         : 
+                        <Fab 
+                           size="medium" 
+                           variant="extended"
+                        >
+                           {user.name}
+                        </Fab>}
+                     </div>
                       :
-                     <IconButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleMenu}
-                        color="inherit"
+                     <Fab 
+                        onClick={handleMenu} 
+                        size="medium" 
+                        variant="extended"
                      >
-                        <AccountCircle className={classes.profileIcon}/>
-                     </IconButton>
+                        Login
+                     </Fab>
                   }
                   <Menu
                      id="menu-appbar"

@@ -1,0 +1,22 @@
+input {
+   display: block;
+   width: 100%;
+   margin: 20px 0px 0px 0px;
+   padding: 5px;
+   font-size: 17px;
+   border: 1px solid black;
+   border-radius: 5px;
+}
+.error{
+   color: red;
+}
+.cartFood {
+   background: #f0f0f0;
+   margin: 15px 5px;
+   padding: 10px 10px 10px 0px;
+   border-radius: 10px;
+}
+.cardStyle {
+   background-color: #ececec;
+   padding: 30px 25px 40px 25px;
+}

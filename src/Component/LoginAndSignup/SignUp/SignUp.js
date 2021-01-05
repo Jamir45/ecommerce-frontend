@@ -1,21 +1,13 @@
-import { Fab, makeStyles } from '@material-ui/core';
-import { Facebook } from '@material-ui/icons';
-import React, { useContext } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useHistory } from 'react-router-dom';
-import { DataContext } from '../../../App';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../UseAuth/useAuth';
+import FormFooter from '../FormFooter';
 import './SignUp.css'
 
 
 const SignUp = () => {
-   const history = useHistory()
    const auth = useAuth()
-   const message = auth.message
-   console.log(message)
-
-   const store = useContext(DataContext)
-   const setAddToCartEvent = store.setAddToCartEvent
 
    const { register, handleSubmit, watch, errors } = useForm();
    const onSubmit = data => {
@@ -27,7 +19,7 @@ const SignUp = () => {
       <div className="container">
          <div className="row">
             <div className="col-1 col-md-3"></div>
-            <div className="col-10 col-md-6 card p-0 text-center mt-5">
+            <div className="col-10 col-md-6 card cardStyle p-0 text-center mt-5">
                <div className='card-header'>
                   <h3 className='py-3'>Sign Up Form</h3>
                   <form onSubmit={handleSubmit(onSubmit)}>
@@ -46,14 +38,7 @@ const SignUp = () => {
                   <span><Link className='notice' to='/sign-in'>Already have an Account.?</Link></span>
                   <span className="option">Or Sign Up With</span>
                </div>
-               <div className=" card-body">
-                  <Fab onClick={() => auth.signInWithFacebook(history)} className='iconButton' color="primary" aria-label="add">
-                     <Facebook style={{fontSize:'30px !important'}} />
-                  </Fab>
-                  <Fab onClick={() => auth.signInWithGmail(history)} className='iconButton' color="primary" aria-label="add">
-                     <i class="fab fa-google-plus"></i>
-                  </Fab>
-               </div>
+               <FormFooter></FormFooter>
             </div>
             <div className="col-1 col-md-3"></div>
          </div>

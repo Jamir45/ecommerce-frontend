@@ -9,6 +9,7 @@ import { useContext } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import jwt_decode from "jwt-decode";
+import { useHistory, useLocation } from 'react-router-dom';
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -28,7 +29,6 @@ export const AuthContextProvider = (props) => {
 
 // Create All Context Function
 const Auth = () => {
-
    const [user, setUser] = useState(null)
    const [message, setMessage] = useState(null)
    setTimeout( () => {
@@ -36,12 +36,11 @@ const Auth = () => {
    }, 4000)
 
    // Sign In With Gmail
-   const signInWithGmail = (history) => {
+   const signInWithGmail = (redirect) => {
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider)
       .then(result => {
-         userToken()
-         history.push('/review')
+         userToken(redirect)
          toast.success('Sign In Successful With Gmail')
       })
       .catch(error => {
@@ -51,15 +50,13 @@ const Auth = () => {
    }
 
    // Sign In With Facebook
-   const signInWithFacebook = (history, setAddToCartEvent) => {
+   const signInWithFacebook = (redirect) => {
       const fbProvider = new firebase.auth.FacebookAuthProvider();
       firebase.auth().signInWithPopup(fbProvider)
       .then(function(result) {
-         userToken()
+         userToken(redirect)
          toast.success('Sign In Successful With Facebook')
          setUser(user)
-         history.push('/review')
-         setAddToCartEvent([result])
        })
        .catch(function(error) {
          const errorCode = error.code;
@@ -117,14 +114,12 @@ const Auth = () => {
    }
 
    // Sign In With Email and Password
-   const signInWithEmailAndPassword = (email, password, history, setAddToCartEvent) => {
-      firebase.auth().signInWithEmailAndPassword(email, password)
+   const signWithEmailAndPassword = (email, password, redirect) => {
+      return firebase.auth().signInWithEmailAndPassword(email, password)
       .then((result) => {
-         userToken()
+         userToken(redirect)
          setMessage({success:'Sign In Successful.'})
          toast.success('Sign In Successful.')
-         history.push('/review')
-         setAddToCartEvent([result])
       })
       .catch((error) => {
          var errorCode = error.code;
@@ -136,21 +131,24 @@ const Auth = () => {
    // Cart 
    const [cart, setCart] = useState([])
    useEffect(() => {
-      fetch('http://localhost:3005/get-cart-product', {
-         method: 'GET',
-         headers: { 
-            'Content-Type': 'application/json',
-            'authorization': sessionStorage.getItem('userToken')
-         }
-      })
-      .then(response => response.json())
-      .then(result => {
-         console.log(result)
-         if (!result.error) {
-         setCart(result)
-         }
-      })
-   }, [user])
+      const savedProduct = JSON.parse(localStorage.getItem('cartProduct'));
+      console.log(savedProduct)
+      setCart(savedProduct)
+      // fetch('http://localhost:3005/get-cart-product', {
+      //    method: 'GET',
+      //    headers: { 
+      //       'Content-Type': 'application/json',
+      //       'authorization': sessionStorage.getItem('userToken')
+      //    }
+      // })
+      // .then(response => response.json())
+      // .then(result => {
+      //    console.log(result)
+      //    if (!result.error) {
+      //    setCart(result)
+      //    }
+      // })
+   }, [])
 
    // Sign Out
    const signOut = (history) => {
@@ -160,7 +158,6 @@ const Auth = () => {
          sessionStorage.removeItem('userToken')
          toast.success('Sign Out Successful.')
          history.push('/')
-         setCart([])
       })
       .catch((error) => {
          console.log(error.message)
@@ -168,11 +165,12 @@ const Auth = () => {
    }
 
    // Save Logged in use token
-   const userToken = () => {
+   const userToken = (redirect) => {
       firebase.auth().currentUser.getIdToken(true)
       .then(function(idToken) {
          sessionStorage.setItem('userToken', idToken)
          setUser(jwt_decode(idToken))
+         redirect()
       }).catch(function(error) {
       // Handle error
       });
@@ -211,7 +209,7 @@ const Auth = () => {
       signOut,
       emailVerification,
       signUpWithEmailAndPassword,
-      signInWithEmailAndPassword,
+      signWithEmailAndPassword,
       toastMessage
    }
 }

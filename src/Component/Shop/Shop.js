@@ -19,23 +19,34 @@ const Shop = () => {
    const addToCartHandler = (key) => {
       const cartProduct  = store.productData.find( pd => pd.key === key)
       cartProduct.quantity = 1
-      fetch('http://localhost:3005/add-to-cart', {
-         method: 'POST',
-         headers: { 
-            'Content-Type': 'application/json',
-            'authorization': sessionStorage.getItem('userToken')
-         },
-         body: JSON.stringify({cartProduct})
-      })
-      .then(response => response.json())
-      .then(result => {
-         console.log(result)
-         const updatedCart = [...cart, result.data]
-         setCart(updatedCart)
-      })
+
+      var old_coords = JSON.parse(localStorage.getItem('cartProduct'));
+      if (old_coords === null) {
+         localStorage.setItem('cartProduct', JSON.stringify([cartProduct]));
+      } else {
+         var new_coords = old_coords;
+         new_coords.push(cartProduct);
+         localStorage.setItem('cartProduct', JSON.stringify(new_coords));
+      }
+      setCart([...cart, cartProduct])
+
+
+      // fetch('http://localhost:3005/add-to-cart', {
+      //    method: 'POST',
+      //    headers: { 
+      //       'Content-Type': 'application/json',
+      //       'authorization': sessionStorage.getItem('userToken')
+      //    },
+      //    body: JSON.stringify({cartProduct})
+      // })
+      // .then(response => response.json())
+      // .then(result => {
+      //    console.log(result)
+      //    const updatedCart = [...cart, result.data]
+      //    setCart(updatedCart)
+      // })
       
    }
-   // store.setAddToCartEvent(() => addToCartHandler())
 
 
    return (

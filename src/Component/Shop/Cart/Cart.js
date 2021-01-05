@@ -1,6 +1,6 @@
 import React from 'react';
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { DataContext } from '../../../App';
 import { useAuth } from '../../UseAuth/useAuth';
 // import SingInPopup from '../../Review/SingInPopup';
@@ -32,7 +32,7 @@ const Cart = (props) => {
       <div className="py-3 px-3"  style={{position:'fixed'}}>
          <h5>Product Cart</h5>
          <p><b>Selected Product : </b>{cart && cart.length}</p>
-         <p>Product Price : <b>{totalPrice.toFixed(2)}</b></p>
+         <p>Product Price : <b>{cart && totalPrice.toFixed(2)}</b></p>
          <p>Shipping Charge : <b> {shipping} </b></p>
          <p>Vat & Tex : <b> {vat.toFixed(2)} </b></p>
          <h5>Total Amount : <b>{totalAmount.toFixed(2)} </b></h5>

@@ -11,29 +11,43 @@ const ReviewProduct = (props) => {
 
    const {img, _id, key, name, price, seller, stock, quantity} = props.product
 
-   const quantityAddRemove = (addedBy, quantity) => {
-      console.log(`ID: ${addedBy} Quantity: ${quantity}`)
+   const quantityAddRemove = (addedBy, Quantity, key) => {
 
-      fetch('http://localhost:3005/add-and-remove-quantity', {
-         method:'PUT',
-         headers:{
-            'Content-type':'application/json',
-            'authorization': sessionStorage.getItem('userToken')
-         },
-         body:JSON.stringify({addedBy, quantity})
+      const savedProduct = JSON.parse(localStorage.getItem('cartProduct'));
+      console.log(savedProduct)
+      const updatedItem = savedProduct.map(item => {
+         if (item.key === key) {
+            const product = item
+            product.quantity = Quantity
+            return product
+         }else{
+            return item
+         }
       })
-      .then(res => res.json())
-      .then(result => {
-         console.log(result)
-         const updatedProduct = cart.map(product => {
-            if (product._id === result._id) {
-               return result
-            }else{
-               return product
-            }
-         })
-         setCart(updatedProduct)
-      })
+      updatedItem && localStorage.setItem('cartProduct', JSON.stringify(updatedItem));
+      setCart(updatedItem)
+
+
+      // fetch('http://localhost:3005/add-and-remove-quantity', {
+      //    method:'PUT',
+      //    headers:{
+      //       'Content-type':'application/json',
+      //       'authorization': sessionStorage.getItem('userToken')
+      //    },
+      //    body:JSON.stringify({addedBy, quantity:Quantity})
+      // })
+      // .then(res => res.json())
+      // .then(result => {
+      //    console.log(result)
+      //    const updatedProduct = cart.map(product => {
+      //       if (product._id === result._id) {
+      //          return result
+      //       }else{
+      //          return product
+      //       }
+      //    })
+      //    setCart(updatedProduct)
+      // })
    }
 
    return (
@@ -50,7 +64,7 @@ const ReviewProduct = (props) => {
                   <Button
                      aria-label="reduce"
                      onClick={() => {
-                        parseFloat(quantity) > 1 && quantityAddRemove(_id, parseFloat(quantity)-1)
+                        parseFloat(quantity) > 1 && quantityAddRemove(_id, parseFloat(quantity)-1, key)
                      }}
                   >
                      <RemoveCircleOutline fontSize="small" />
@@ -58,14 +72,14 @@ const ReviewProduct = (props) => {
                   <Button
                      aria-label="increase"
                      onClick={() => {
-                        quantityAddRemove(_id, parseFloat(quantity)+1)
+                        quantityAddRemove(_id, parseFloat(quantity)+1, key)
                      }}
                   >
                      <AddCircleOutline fontSize="small" />
                   </Button>
                </ButtonGroup>
             </div>
-            <Button variant="contained" color="primary" onClick={() => props.removeToCartHandler(_id)}>Remove From Cart</Button>
+            <Button variant="contained" color="primary" onClick={() => props.removeToCartHandler(_id, key)}>Remove From Cart</Button>
          </div>
       </div>
    );
