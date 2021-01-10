@@ -9,7 +9,6 @@ const CompleteRegistrtion = () => {
 
    const registrationComplete = () => {
       const userData = localStorage.getItem('userForSignUp')
-      console.log(JSON.parse(userData))
       const {name, email, password} = JSON.parse(userData)
       auth.signUpWithEmailAndPassword(name, email, password, history)
    }
@@ -20,8 +19,18 @@ const CompleteRegistrtion = () => {
             <div className='col-1 col-md-3'></div>
             <div className='col-10 col-md-6 card text-center py-5'>
                {auth.toastMessage()}
-               <h3>Your Email Verification Successful. Now Please Complete Your Registration Process</h3>
-               <Button className='mt-3' onClick={() => registrationComplete()} variant="contained" color="secondary">Complete Registration</Button>
+               <h3>
+                  Your Email Verification Successful. Now Please Complete Your Registration Process
+               </h3>
+               <Button 
+                  className='mt-3' 
+                  onClick={() => 
+                  registrationComplete()} 
+                  variant="contained" 
+                  color="secondary"
+               >
+                  Complete Registration
+               </Button>
             </div>
             <div className='col-1 col-md-3'></div>
          </div>

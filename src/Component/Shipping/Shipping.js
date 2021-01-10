@@ -1,19 +1,22 @@
-import { Button } from '@material-ui/core';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import React from 'react';
 import { useState } from 'react';
 import { useAuth } from '../UseAuth/useAuth';
 import './Shipping.css'
 import ShippingForm from './ShippingForm';
 import { toast } from 'react-toastify';
+import { Elements } from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
+import StripePaymentForm from './StripePayment/StripePaymentForm';
 
 const Shipping = () => {
    const auth = useAuth();
    const cart = auth.cart
    const setCart = auth.setCart
-
+   
    const totalPrice = cart && cart.reduce((initialValue, cartProduct) => initialValue+parseFloat(cartProduct.price*cartProduct.quantity), 0)
    const price = totalPrice.toFixed(2)
-
+   
    let shipping = 0;
    if (totalPrice > 1 && totalPrice < 300 ) {
       shipping = 10
@@ -24,38 +27,38 @@ const Shipping = () => {
    }else {
       shipping = 0
    }
-
+   
    const vat = parseFloat(totalPrice * 2 / 100).toFixed(2)
    const totalAmount = parseFloat(totalPrice + shipping + vat).toFixed(2)
    const totalItem = auth.cart && auth.cart.length
-
+   
    const cost = {totalItem, productPrice:parseFloat(price), shippingCharge:shipping, tax:parseFloat(vat), totalAmount:parseFloat(totalAmount)}
 
    const [formData, setFormData] = useState(null)
-   const placeholder = () => {
-      console.log({user:auth.user, shipping:formData, products:auth.cart, cost})
+   const placeholder = (paymentInfo) => {
 
-      fetch('http://localhost:3005/place-order', {
+      fetch('https://mern-ecommerce-backend-server.herokuapp.com/place-order', {
          method:'POST',
          headers:{
             'Content-Type':'application/json',
             'authorization': sessionStorage.getItem('userToken')
          },
-         body:JSON.stringify({user:auth.user, shipping:formData, products:auth.cart, cost})
+         body:JSON.stringify({user:auth.user, shipping:formData, products:auth.cart, cost, paymentInfo})
       })
       .then(res => res.json())
       .then(result => {
          console.log(result)
          toast.success(result.success)
-         setCart([])
          if (result.success) {
+            setCart([])
             localStorage.removeItem('cartProduct')
             window.location.pathname = "/profile"
          }
-      })
-      
+      })  
    }
 
+   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_API_KEY);
+   
    return (
       <div className="container">
          {auth.toastMessage()}
@@ -65,40 +68,79 @@ const Shipping = () => {
             </div>
             <div className="col-md-6 p-3 my-5 card">
                <div className='text-center'>
-                  <h4 className="heading">Your Selected Product</h4>
+                  <h4 className="heading">
+                     Your Selected Product
+                  </h4>
                </div>
-               {
-                  auth.cart && auth.cart.map(cartFood => {
-                     const {name, price, img, quantity} = cartFood
-                     return(
-                     <div className="cartFood row align-items-center">
-                        <div className="col-4">
-                           <img className="img-fluid" src={img} alt=""/>
-                        </div>
-                        <div className="col-8">
-                           <p> <b>Name : </b> {name.length > 70 ? `${name.slice(0, 70)}...` : name} </p>                           <p> <b>Price : $</b> {price} </p>
-                           <p> <b>Quantity : </b> {quantity} </p>
-                        </div>
-                     </div>
-                     )
-                  })
-               }
-               <div className='text-center'>
-                  {
-                     formData ? <Button 
-                        variant="contained" 
-                        color="primary" 
-                        onClick={() => placeholder()}
+               <TableContainer component={Paper}>
+                  <Table aria-label="simple table">
+                  <TableHead>
+                     <TableRow>
+                        <TableCell>Product</TableCell>
+                        <TableCell>Name</TableCell>
+                        <TableCell>Price</TableCell>
+                        <TableCell>Quantity</TableCell>
+                     </TableRow>
+                  </TableHead>
+                  <TableBody>
+                     {
+                        auth.cart && auth.cart.map(cartFood => {
+                           const {name, price, img, quantity} = cartFood
+                           return(
+                              <TableRow>
+                                 <TableCell><img className="img-fluid" src={img} alt=""/></TableCell>
+                                 <TableCell>{name.length > 50 ? `${name.slice(0, 50)}...` : name}</TableCell>
+                                 <TableCell><b>$</b>{price}</TableCell>
+                                 <TableCell>{quantity}</TableCell>
+                              </TableRow>
+                           )
+                        })
+                     }
+                  </TableBody>
+                  </Table>
+               </TableContainer>
+
+               <div className='card-footer'>
+                  <TableContainer component={Paper}>
+                     <Table aria-label="simple table">
+                     <TableHead>
+                        <TableRow>
+                           <TableCell align="center">
+                              <h4>Total Cost Calculation</h4>
+                           </TableCell>
+                        </TableRow>
+                     </TableHead>
+                     <TableBody>
+                        <TableRow>
+                           <TableCell>
+                              Product Price :<span className='float-right'>$ {price}</span>
+                           </TableCell>
+                        </TableRow>
+                        <TableRow>
+                           <TableCell>
+                              Shipping Charge :<span className='float-right'>$ {shipping}</span>
+                           </TableCell>
+                        </TableRow>
+                        <TableRow>
+                           <TableCell>
+                              Vat and Text :<span className='float-right'>$ {vat}</span>
+                           </TableCell>
+                        </TableRow>
+                        <TableRow>
+                           <TableCell>
+                              <h4>Total Price :<span className='float-right'>$ {totalAmount}</span></h4>
+                           </TableCell>
+                        </TableRow>
+                     </TableBody>
+                     </Table>
+                  </TableContainer>
+                  <Elements stripe={stripePromise}>
+                     <StripePaymentForm 
+                        formData={formData} 
+                        placeholder={placeholder}
                      >
-                        Place Order
-                     </Button> : <Button 
-                        variant="contained" 
-                        color="primary" 
-                        disabled
-                     >
-                        Place Order
-                     </Button>
-                  }
+                     </StripePaymentForm>
+                  </Elements>
                </div>
             </div>
          </div>

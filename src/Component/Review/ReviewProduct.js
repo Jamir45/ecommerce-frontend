@@ -6,15 +6,13 @@ import { useAuth } from '../UseAuth/useAuth';
 
 const ReviewProduct = (props) => {
    const auth = useAuth()
-   const cart = auth.cart
    const setCart = auth.setCart
 
    const {img, _id, key, name, price, seller, stock, quantity} = props.product
 
-   const quantityAddRemove = (addedBy, Quantity, key) => {
+   const quantityAddRemove = (Quantity, key) => {
 
       const savedProduct = JSON.parse(localStorage.getItem('cartProduct'));
-      console.log(savedProduct)
       const updatedItem = savedProduct.map(item => {
          if (item.key === key) {
             const product = item
@@ -27,8 +25,7 @@ const ReviewProduct = (props) => {
       updatedItem && localStorage.setItem('cartProduct', JSON.stringify(updatedItem));
       setCart(updatedItem)
 
-
-      // fetch('http://localhost:3005/add-and-remove-quantity', {
+      // fetch('https://mern-ecommerce-backend-server.herokuapp.com/add-and-remove-quantity', {
       //    method:'PUT',
       //    headers:{
       //       'Content-type':'application/json',
@@ -64,7 +61,7 @@ const ReviewProduct = (props) => {
                   <Button
                      aria-label="reduce"
                      onClick={() => {
-                        parseFloat(quantity) > 1 && quantityAddRemove(_id, parseFloat(quantity)-1, key)
+                        parseFloat(quantity) > 1 && quantityAddRemove(parseFloat(quantity)-1, key)
                      }}
                   >
                      <RemoveCircleOutline fontSize="small" />
@@ -72,14 +69,20 @@ const ReviewProduct = (props) => {
                   <Button
                      aria-label="increase"
                      onClick={() => {
-                        quantityAddRemove(_id, parseFloat(quantity)+1, key)
+                        quantityAddRemove(parseFloat(quantity)+1, key)
                      }}
                   >
                      <AddCircleOutline fontSize="small" />
                   </Button>
                </ButtonGroup>
             </div>
-            <Button variant="contained" color="primary" onClick={() => props.removeToCartHandler(_id, key)}>Remove From Cart</Button>
+            <Button 
+               variant="contained" 
+               color="primary" 
+               onClick={() => props.removeToCartHandler(_id, key)}
+            >
+               Remove From Cart
+            </Button>
          </div>
       </div>
    );

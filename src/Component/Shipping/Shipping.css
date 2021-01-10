@@ -18,5 +18,8 @@ input {
 }
 .cardStyle {
    background-color: #ececec;
+   box-shadow: rgba(50, 50, 93, 0.109804) 0px 4px 6px,
+     rgba(0, 0, 0, 0.0784314) 0px 1px 3px;
+   border: 0;
    padding: 30px 25px 40px 25px;
 }

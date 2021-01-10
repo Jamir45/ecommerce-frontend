@@ -1,9 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
-import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { DataContext } from '../../App';
-import { processOrder, removeFromDatabaseCart } from '../../utilities/databaseManager';
 import Cart from '../Shop/Cart/Cart';
 import ReviewProduct from './ReviewProduct';
 import { useAuth } from '../UseAuth/useAuth';
@@ -12,23 +8,16 @@ import './Review.css'
 const Review = () => {
    const auth = useAuth()
    const cart = auth.cart
-   console.log(cart)
    const setCart = auth.setCart
-   const setAddToCartEvent = auth.setAddToCartEvent
 
    // Remove product form cart
    const removeToCartHandler = (productId, key) => {
-      // const cartProduct  = store.productData.filter( pd => pd.key !== key)
-      // const cartItem = [...store.addToCartEvent, cartProduct]
-      // store.setAddToCartEvent(cartItem)
-      // removeFromDatabaseCart(key)
-      console.log(productId)
       const savedProduct = JSON.parse(localStorage.getItem('cartProduct'));
       const removeItem = savedProduct.filter(item => item.key !== key)
       removeItem && localStorage.setItem('cartProduct', JSON.stringify(removeItem));
       setCart(removeItem)
       
-      // fetch('http://localhost:3005/delete-cart-product', {
+      // fetch('https://mern-ecommerce-backend-server.herokuapp.com/delete-cart-product', {
       //    method: 'DELETE',
       //    headers: {
       //       'Content-Type': 'application/json',
@@ -47,21 +36,12 @@ const Review = () => {
       // })
    }
 
-   // Place Order Handler
-   const [orderPlaced, setOrderPlaced] = useState(false)
-   const placeOrderHandler = () => {
-      setAddToCartEvent([])
-      processOrder()
-      setOrderPlaced(true)
-   }
-
    return (
       <div className="container">
          <div className="row">
             {auth.toastMessage()}
             <div className="col-4">
                <Cart
-                  placeOrderHandler={placeOrderHandler}
                   button={false}
                ></Cart>
             </div>

@@ -1,50 +1,28 @@
-import { AppBar, Avatar, Container, Divider, Drawer, Fab, IconButton, List, ListItem, ListItemIcon, makeStyles, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
-import StyledBadge from '@material-ui/core/Badge';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import MailIcon from '@material-ui/icons/Mail';
-import { AccountCircle } from '@material-ui/icons';
-import MenuIcon from '@material-ui/icons/Menu';
 import React from 'react';
-import logo from '../../images/logo.png'
-import { Link, useHistory } from 'react-router-dom';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import InputBase from '@material-ui/core/InputBase';
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
 import './Header.css'
+import { Link } from 'react-router-dom';
+import { Avatar, Container, Divider, Drawer, Fab, List, ListItem, ListItemIcon } from '@material-ui/core';
+import UserMenu from './UserMenu';
+import logo from '../../images/logo.png'
+import MailIcon from '@material-ui/icons/Mail';
 import { useAuth } from '../UseAuth/useAuth';
 import { useContext } from 'react';
 import { DataContext } from '../../App';
+import { useStyles } from './HeaderStyle';
 
-
-const Header = () => {
-   const history = useHistory()
-
+export default function Header() {
+   const classes = useStyles();
    const auth = useAuth()
    const user = auth.user
-   const cart = auth.cart
 
-   // Make Material UI Custom Style
-   const useStyles = makeStyles((theme) => ({
-      root: {
-        flexGrow: 1,
-      },
-      menuButton: {
-        marginRight: theme.spacing(2),
-      },
-      title: {
-        flexGrow: 1,
-      },
-      list: {
-         width: 250,
-      },
-      fullList: {
-      width: 'auto',
-      },
-      profileIcon:{
-         fontSize:40
-      },
-      cart:{
-         color:"white"
-      }
-    }));
-   const classes = useStyles();
+   const store = useContext(DataContext)
 
    // Toggle Navigation Bar on Left
    const [state, setState] = React.useState({left: false});
@@ -83,128 +61,105 @@ const Header = () => {
                </Fab>
             }
             <ListItem button>
-              <ListItemIcon><MailIcon/> <Link className="ml-3" >Profile</Link> </ListItemIcon>
+              <ListItemIcon>
+                  <MailIcon/> 
+                  <Link to="/profile" className="ml-3" >
+                     Profile
+                  </Link> 
+               </ListItemIcon>
             </ListItem>
             <ListItem button>
-               <ListItemIcon><MailIcon/> <Link to="" className="ml-3" >My Account</Link> </ListItemIcon>
+               <ListItemIcon>
+                  <MailIcon/> 
+                  <Link to="/profile" className="ml-3" >
+                     My Account
+                  </Link> 
+               </ListItemIcon>
             </ListItem>
          </List>
          <Divider />
          <List>
             <ListItem button>
-              <ListItemIcon><MailIcon/> <Link to="shop" className="ml-3" >Shop</Link> </ListItemIcon>
+              <ListItemIcon>
+                  <MailIcon/> 
+                  <Link to="shop" className="ml-3" >
+                     Shop
+                  </Link> 
+               </ListItemIcon>
             </ListItem>
             <ListItem button>
-               <ListItemIcon><MailIcon/> <Link to="/review" className="ml-3" >Order Review</Link> </ListItemIcon>
+               <ListItemIcon>
+                  <MailIcon/> 
+                  <Link to="/review" className="ml-3" >
+                     Order Review
+                  </Link> 
+               </ListItemIcon>
             </ListItem>
             <ListItem button>
-              <ListItemIcon><MailIcon/> <Link to="/manage-cart" className="ml-3" >Inventory</Link> </ListItemIcon>
+              <ListItemIcon>
+                  <MailIcon/> 
+                  <Link to="/review" className="ml-3" >
+                     Cart Page
+                  </Link> 
+               </ListItemIcon>
             </ListItem>
          </List>
       </div>
    );
-   const [anchorEl, setAnchorEl] = React.useState(null);
-   const open = Boolean(anchorEl);
    
-   const handleMenu = (event) => {
-      setAnchorEl(event.currentTarget);
-   };
-   
-   const handleClose = () => {
-      setAnchorEl(null);
-   };
-    
-
-   return (
-      <div className={classes.root}>
-         <AppBar position="static">
-            <Container>
+  return (
+    <div className={classes.grow}>
+      <AppBar position="static">
+         <Container>
             <Toolbar>
-               <IconButton edge="start" className={classes.menuButton + "d-block d-md-none"} color="inherit" aria-label="menu">
-               <React.Fragment key={"left"}>
-                  <MenuIcon onClick={toggleDrawer("left", true)} />
-                  <Drawer anchor={"left"} open={state["left"]} onClose={toggleDrawer("left", false)}>
-                     {list("left")}
-                  </Drawer>
-               </React.Fragment>
+               <IconButton
+                  edge="start"
+                  className={classes.menuButton +"d-block d-md-none"}
+                  color="inherit"
+                  aria-label="open drawer"
+               >
+                  <React.Fragment key={"left"}>
+                     <MenuIcon onClick={toggleDrawer("left", true)} />
+                     <Drawer anchor={"left"} open={state["left"]} onClose={toggleDrawer("left", false)}>
+                        {list("left")}
+                     </Drawer>
+                  </React.Fragment>
                </IconButton>
 
-               <Typography variant="h6" className={classes.title}>
-               <img style={{width:'120px'}} src={logo} alt="e-commerce"/>
+               <Typography className={classes.title} variant="h6" noWrap>
+                  <img style={{width:'120px'}} src={logo} alt="e-commerce"/>
                </Typography>
 
+               <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                     <SearchIcon />
+                  </div>
+                  <InputBase
+                     placeholder="Search…"
+                     classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                     }}
+                     inputProps={{ 'aria-label': 'search' }}
+                     onBlur={(e) => store.setSearchValue(e.target.value)}
+                  />
+               </div>
+
+               <div className={classes.grow} />
                <div className="menu d-none d-md-block">
                   <nav className="">
-                     <Link className="link" to="/shop">Shop</Link>
-                     <Link className="link" to="/review">Order Review</Link>
-                     <Link className="link" to="/manage-cart">Inventory</Link>
-                     <Link to="/review">
-                        <IconButton className="mx-3" aria-label="cart">
-                           <StyledBadge badgeContent={cart && cart.length} color="secondary">
-                           <AddShoppingCartIcon className={classes.cart} />
-                           </StyledBadge>
-                        </IconButton>
+                     <Link className="link" to="/shop">
+                        Shop
+                     </Link>
+                     <Link className="link" to="/review">
+                        Order Review
                      </Link>
                   </nav>
                </div>
-
-               <div className='text-center'>
-                  {
-                     user ? 
-                     <div onClick={handleMenu}>
-                        { user.picture ? <Avatar alt="Remy Sharp" src={user.picture} className={classes.large} />
-                         : 
-                        <Fab 
-                           size="medium" 
-                           variant="extended"
-                        >
-                           {user.name}
-                        </Fab>}
-                     </div>
-                      :
-                     <Fab 
-                        onClick={handleMenu} 
-                        size="medium" 
-                        variant="extended"
-                     >
-                        Login
-                     </Fab>
-                  }
-                  <Menu
-                     id="menu-appbar"
-                     anchorEl={anchorEl}
-                     anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                     }}
-                     keepMounted
-                     transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                     }}
-                     open={open}
-                     onClose={handleClose}
-                  >
-                     <MenuItem onClick={handleClose}>
-                        {
-                           user ? <Link> Profile </Link> : 
-                           <Link to="/sign-in"> Sign In </Link>
-                        }
-                     </MenuItem>
-                     <MenuItem onClick={handleClose}>
-                        {
-                           user ? <Link onClick={() => auth.signOut(history)}> Sign Out </Link> : 
-                           <Link to="/sign-up"> Sign Up </Link>
-                        }
-                     </MenuItem>
-                  </Menu>
-               </div>
-               
+               <UserMenu classes={classes}></UserMenu>
             </Toolbar>
-            </Container>
-         </AppBar>
-      </div>
-   );
-};
-
-export default Header;
+         </Container>
+      </AppBar>
+    </div>
+  );
+}

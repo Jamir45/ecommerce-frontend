@@ -17,14 +17,19 @@ const FormFooter = () => {
    }
 
    return (
-      <div className=" card-body">
+      <>
+         <div className='text-center my-3'>
+            <span className="option">
+               <span className='text'>Or Sign Up With</span>
+            </span>
+         </div>
          <Fab onClick={() => auth.signInWithFacebook(redirect)} className='iconButton' color="primary" aria-label="add">
-            <Facebook style={{fontSize:'30px !important'}} />
+            <Facebook className='facebookIcon' style={{fontSize:'40px !important', color:'white'}} />
          </Fab>
          <Fab onClick={() => auth.signInWithGmail(redirect)} className='iconButton' color="primary" aria-label="add">
             <i class="fab fa-google-plus"></i>
          </Fab>
-      </div>
+      </>
    );
 };
 

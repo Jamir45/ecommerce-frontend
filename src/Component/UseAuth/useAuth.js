@@ -9,11 +9,9 @@ import { useContext } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import jwt_decode from "jwt-decode";
-import { useHistory, useLocation } from 'react-router-dom';
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
 
 
 // Create Auth Context
@@ -131,10 +129,14 @@ const Auth = () => {
    // Cart 
    const [cart, setCart] = useState([])
    useEffect(() => {
-      const savedProduct = JSON.parse(localStorage.getItem('cartProduct'));
-      console.log(savedProduct)
-      setCart(savedProduct)
-      // fetch('http://localhost:3005/get-cart-product', {
+      const old_coords = JSON.parse(localStorage.getItem('cartProduct'));
+      if (old_coords === null) {
+         localStorage.setItem('cartProduct', JSON.stringify([]));
+      } else {
+         const savedProduct = JSON.parse(localStorage.getItem('cartProduct'));
+         setCart(savedProduct)
+      }
+      // fetch('https://mern-ecommerce-backend-server.herokuapp.com/get-cart-product', {
       //    method: 'GET',
       //    headers: { 
       //       'Content-Type': 'application/json',

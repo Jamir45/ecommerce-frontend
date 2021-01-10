@@ -1,11 +1,7 @@
 import React from 'react';
-import { useContext } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
-import { DataContext } from '../../../App';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../UseAuth/useAuth';
-// import SingInPopup from '../../Review/SingInPopup';
-// import { useAuth } from '../../UseAuth/useAuth';
-
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 
 
 const Cart = (props) => {
@@ -29,16 +25,52 @@ const Cart = (props) => {
    const totalAmount = parseFloat(totalPrice + shipping + vat)
 
    return (
-      <div className="py-3 px-3"  style={{position:'fixed'}}>
-         <h5>Product Cart</h5>
-         <p><b>Selected Product : </b>{cart && cart.length}</p>
-         <p>Product Price : <b>{cart && totalPrice.toFixed(2)}</b></p>
-         <p>Shipping Charge : <b> {shipping} </b></p>
-         <p>Vat & Tex : <b> {vat.toFixed(2)} </b></p>
-         <h5>Total Amount : <b>{totalAmount.toFixed(2)} </b></h5>
-         {
-            props.button ? <Link to='/review'><button className="btn btn-success">Review Product</button></Link> : <Link to='/shipping'><button className="btn btn-success">Add Shipping</button></Link>
-         }
+      <div className="py-3"  style={{position:'fixed', width:'20%'}}>
+         <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+            <TableHead>
+               <TableRow>
+                  <TableCell align="center">
+                     <h5>Product Cart</h5>
+                  </TableCell>
+               </TableRow>
+            </TableHead>
+            <TableBody>
+               <TableRow>
+                  <TableCell>
+                     Selected Product :<span className='float-right'>{cart && cart.length}</span>
+                  </TableCell>
+               </TableRow>
+               <TableRow>
+                  <TableCell>
+                     Product Price :<span className='float-right'>$ {cart && totalPrice.toFixed(2)}</span>
+                  </TableCell>
+               </TableRow>
+               <TableRow>
+                  <TableCell>
+                     Shipping Charge :<span className='float-right'>$ {shipping}</span>
+                  </TableCell>
+               </TableRow>
+               <TableRow>
+                  <TableCell>
+                     Vat and Text :<span className='float-right'>$ {vat.toFixed(2)}</span>
+                  </TableCell>
+               </TableRow>
+               <TableRow>
+                  <TableCell>
+                     <h6>Total Amount : <span className='float-right'>$ {totalAmount.toFixed(2)}</span></h6>
+                  </TableCell>
+               </TableRow>
+            </TableBody>
+            
+            </Table>
+            <div className='text-center mb-3'>
+               {
+                  props.button ? 
+                  <Link to='/review'><button className="btn btn-success">Review Product</button></Link> : <Link to='/shipping'><button className="btn btn-success">Add Shipping</button></Link>
+               }
+            </div>
+         </TableContainer>
       </div>
    );
 };
