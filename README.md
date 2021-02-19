@@ -27,4 +27,4 @@ This is a MERN Stack E-commerce web app. Where people are able to select any kin
 * Local Storage
 * Stripe.js
 
-[Backend Repository](https://github.com/Jamir45/Red-Onion-Restaurant-Backend)
+[Backend Repository](https://github.com/Jamir45/ecommerce-backend)
